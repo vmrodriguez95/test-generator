@@ -1,0 +1,87 @@
+@import '../../styles/variables/variables.grid.scss';
+@import '../../styles/tools/tools.margins.scss';
+
+.v-home {
+  &__head {
+    border-bottom: 1px solid var(--color-gray);
+    padding: space(1);
+    box-sizing: border-box;
+    
+    @media(min-width: breakpoint('md')) {
+      padding: space(1) space(4);
+    }
+    
+    &__wrapper {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: space(2);
+      width: 100%;
+
+      @media(min-width: breakpoint('md')) {
+        margin: 0 auto;
+        max-width: var(--width-wrapper);
+        flex-flow: row wrap;
+        justify-content: center;
+      }
+    }
+  }
+
+  &__file {
+    display: none;
+  }
+
+  &__form {
+    padding: space(2) space(1) space(2) 0;
+    
+    @media(min-width: breakpoint('md')) {
+      margin: 0 auto;
+      padding: space(2) space(4);
+      width: 100%;
+      max-width: var(--width-wrapper);
+    }
+  }
+
+  &__question {
+    counter-reset: alpha-index;
+    margin: 0 0 space(3);
+    box-sizing: border-box;
+  }
+
+  &__statement {
+    margin: 0 0 space(1);
+  }
+
+  &__options {
+    padding-left: space(1);
+    list-style-type: none;
+    counter-reset: li-index;
+    
+    @media(min-width: breakpoint('md')) {
+      padding: 0;
+    }
+  }
+  
+  &__option {
+    counter-increment: alpha-index;
+
+    &::before {
+      content: counter(alpha-index, upper-alpha) ".";
+      font-weight: 700;
+    }
+  }
+
+  &__radio {
+    vertical-align: middle;
+    margin: 0 space(1);
+
+    &.is-correct + label {
+      color: var(--color-success);
+      font-weight: 700;
+    }
+
+    &.is-wrong + label {
+      color: var(--color-error);
+    }
+  }
+}

@@ -1,0 +1,44 @@
+@import '../variables/variables.grid.scss';
+@import '../tools/tools.margins.scss';
+
+.e-grid {
+  --grid-xs-columns: 4;
+  --grid-sm-columns: 12;
+  --grid-md-columns: 12;
+  display: grid;
+  max-width: var(--grid-width, 1500px);
+  margin: 0 var(--grid-margins, 16px);
+  grid-column-gap: space(2);
+  grid-template-columns: repeat(var(--grid-xs-columns), 1fr);
+  grid-column-end: span var(--grid-xs-columns);
+  
+  @media (min-width: breakpoint(sm)) {
+    margin: 0 var(--grid-margins, 40px);
+    grid-column-gap: space(4);
+    grid-template-columns: repeat(var(--grid-sm-columns), 1fr);
+    grid-column-end: span var(--grid-sm-columns);
+  }
+  
+  @media (min-width: breakpoint(md)) {
+    margin: 0 var(--grid-margins, 80px);
+    grid-template-columns: repeat(var(--grid-md-columns), 1fr);
+    grid-column-end: span var(--grid-md-columns);
+  }
+
+  @media (min-width: 1660px) {
+    margin: 0 auto;
+  }
+
+  > *,
+  > ::slotted(*) {
+    grid-column: span var(--grid-xs-columns);
+
+    @media (min-width: breakpoint(sm)) {
+      grid-column: span var(--grid-sm-columns);
+    }
+
+    @media (min-width: breakpoint(md)) {
+      grid-column: span var(--grid-md-columns);
+    }
+  }
+}
