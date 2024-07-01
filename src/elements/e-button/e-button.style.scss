@@ -17,15 +17,29 @@
 
 .e-button {
   display: inline-block;
-  padding: 13px 10px;
-  margin-left: 10px;
-  margin-bottom: 10px;
+  padding: 0;
+  margin: 0;
   border-width: 0;
   border-radius: 10px;
   background-color: var(--eButtonBgColor, var(--color-primary));
   box-shadow: -10px 10px 0 0 var(--eButtonColor, var(--color-red));
-  width: auto;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
   cursor: pointer;
+  transition: opacity 0.3s ease-out;
+
+  &--visible {
+    padding: 13px 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    opacity: 1;
+    width: auto;
+    height: auto;
+    overflow: initial;
+
+  }
 
   ::slotted(*) {
     @include text--large(700);

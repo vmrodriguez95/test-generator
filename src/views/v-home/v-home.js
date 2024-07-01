@@ -4,6 +4,7 @@ import { customElement, state, query } from 'lit/decorators.js'
 import { map } from 'lit/directives/map.js'
 import { when } from 'lit/directives/when.js'
 import { repeat } from 'lit/directives/repeat.js'
+import { shuffle } from '../../utils/actions.utils.js'
 
 import style from './v-home.style.scss?inline'
 
@@ -20,6 +21,8 @@ class VHome extends LitElement {
   @state() lastSolutionsFile
 
   @state() areSolutionsLoaded = false
+
+  @state() isFormValidated = false
 
   @query('form') form
 
@@ -60,6 +63,12 @@ class VHome extends LitElement {
           </div>
         </div>
 
+        ${when(this.isFormValidated, () => html`
+          <e-button type="secondary" class="v-home__reload" @click=${this.reloadForm}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" stroke-linecap="round" d="M10 4c-.8-1.1-2-2.5-4.1-2.5-2.5 0-4.4 2-4.4 4.5s2 4.5 4.4 4.5c1.3 0 2.5-.6 3.3-1.5m1.3-7.5V4c0 .3-.2.5-.5.5H7.5"/></svg>
+          </e-button>  
+        `)}
+
         <form class="v-home__form" @submit=${this.validate}>
           ${when(this.areSolutionsLoaded, () => html`
             <ol class="v-home__questions">
@@ -67,9 +76,9 @@ class VHome extends LitElement {
               <li class="v-home__question">
                 <p class="v-home__statement">${question.statement.trim()}</p>
                 <ul class="v-home__options">
-                  ${map(Object.values(question.options), (option, idx) => html`
+                  ${map(question.options, (option, idx) => html`
                     <li class="v-home__option">
-                      <input id="question-${questionIdx}-response-${idx}" class="v-home__radio" type="radio" name="question-${questionIdx}" value=${idx} required mark="${option.isSolution}">
+                      <input id="question-${questionIdx}-response-${idx}" class="v-home__radio" type="radio" name="question-${questionIdx}" value=${idx} required mark="${option.isSolution}" />
                       <label for="question-${questionIdx}-response-${idx}">${option.text.trim()}</label>
                     </li>
                   `)}
@@ -105,6 +114,28 @@ class VHome extends LitElement {
     this.questions = value
   }
 
+  shakeOptions(questions) {
+    questions.forEach((question) => {
+      question.options = shuffle(Array.from(question.options))
+    })
+  }
+
+  reloadForm() {
+    this.isFormValidated = false
+    this.resetRadios()
+    const newQuestions = shuffle(Array.from(this.questions))
+    this.shakeOptions(newQuestions)
+    this.setQuestions(newQuestions)
+  }
+
+  resetRadios() {
+    this.shadowRoot.querySelectorAll('.v-home__radio').forEach((radio) => {
+      radio.checked = false
+      radio.disabled = false
+      radio.classList.remove('is-correct', 'is-wrong')
+    })
+  }
+
   chooseFile(type) {
     let idInputFile = ''
 
@@ -118,6 +149,14 @@ class VHome extends LitElement {
     }
 
     this.shadowRoot.querySelector(idInputFile).click()
+  }
+
+  convertSolutionsInArray() {
+    this.questions = this.questions.map((question) => {
+      question.options = Object.values(question.options)
+
+      return question
+    })
   }
 
   async handlerQuestionsPdf(pdf) {
@@ -192,6 +231,8 @@ class VHome extends LitElement {
         this.questions[parseInt(question.trim()) - 1].options[solution.trim()].isSolution = true
       })
 
+      this.convertSolutionsInArray()
+
       this.areSolutionsLoaded = true
     } catch(error) {
       alert('Formato del pdf incorrecto. Revisa que se cumple el formato -> 1. A // 2. A // 3. B // ... Si no sabes qué ocurre puedes recurrir a tu programador de confianza.')
@@ -233,7 +274,7 @@ class VHome extends LitElement {
     e.preventDefault()
     e.stopPropagation()
 
-    if (this.form.isValidated) return // Must not revalidate form again
+    if (this.isFormValidated) return // Must not revalidate form again
 
     const numOfQuestions = this.questions.length
     const nonMarkedFields = this.getNonMarkedFields(numOfQuestions)
@@ -244,7 +285,7 @@ class VHome extends LitElement {
     }
 
     this.showResultToUser(numOfQuestions)
-    this.form.isValidated = true
+    this.isFormValidated = true
   }
 
   getNonMarkedFields(numOfQuestions) {
