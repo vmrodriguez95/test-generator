@@ -1,10 +1,14 @@
 import { LitElement, html, css, unsafeCSS } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
 
 import style from './e-button.style.scss?inline'
 
 @customElement('e-button')
 class EButton extends LitElement {
+
+  @state() isVisible = false
+
   /**
    * Component's styles
    */
@@ -17,9 +21,20 @@ class EButton extends LitElement {
     super.connectedCallback()
   }
 
+  updated() {
+    if (!this.isVisible) {
+      setTimeout(() => this.isVisible = true, 100)
+    }
+  }
+
   render() {
+    const classes = classMap({
+      'e-button': true,
+      'e-button--visible': this.isVisible
+    })
+
     return html`
-      <button class="e-button">
+      <button class=${classes}>
         <slot></slot>
       </button>
     `

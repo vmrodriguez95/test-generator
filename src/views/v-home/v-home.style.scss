@@ -31,7 +31,14 @@
     display: none;
   }
 
+  &__reload {
+    position: fixed;
+    top: space(1);
+    right: space(1);
+  }
+
   &__form {
+    box-sizing: border-box;
     padding: space(2) space(1) space(2) 0;
     
     @media(min-width: breakpoint('md')) {
@@ -79,9 +86,10 @@
       color: var(--color-success);
       font-weight: 700;
     }
-
+    
     &.is-wrong + label {
       color: var(--color-error);
+      font-weight: 700;
     }
   }
 }
