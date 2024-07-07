@@ -46,6 +46,19 @@ function fillBundles() {
   })
 }
 
+function getIconList() {
+  const icons = {}
+  const iconsPath = './src/elements/e-icon/sources'
+
+  fs.readdirSync(iconsPath).forEach((item) => {
+    if (isValidItem(item)) {
+      icons[item.replace('.svg', '')] = fs.readFileSync(`${iconsPath}/${item}`, { encoding: 'utf8' })
+    }
+  })
+
+  return icons
+}
+
 fillBundles()
 
 // Building compilation core
@@ -92,7 +105,10 @@ function getBuildConfig(type, env, files) {
       contents: files.map(file => `import "${ file }"`).join('\n'),
       resolveDir: '.'
     },
-    external: ['static']
+    external: ['static'],
+    define: {
+      EICON_LIST: JSON.stringify(getIconList())
+    }
   }
 }
 
