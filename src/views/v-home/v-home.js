@@ -74,11 +74,18 @@ class VHome extends LitElement {
             <ol class="v-home__questions">
             ${repeat(this.questions, (question) => question.statement, (question, questionIdx) => html`
               <li class="v-home__question">
-                <p class="v-home__statement">${question.statement.trim()}</p>
+                <p class="v-home__statement">
+                  ${question.statement.trim()}
+                  ${when(!this.isFormValidated, () => html`
+                    <button class="v-home__clear" @click=${this.clearQuestion} type="button">
+                      <e-icon icon="broom" size="s"></e-icon>
+                    </button>
+                  `)}
+                </p>
                 <ul class="v-home__options">
                   ${map(question.options, (option, idx) => html`
                     <li class="v-home__option">
-                      <input id="question-${questionIdx}-response-${idx}" class="v-home__radio" type="radio" name="question-${questionIdx}" value=${idx} required mark="${option.isSolution}" />
+                      <input id="question-${questionIdx}-response-${idx}" class="v-home__radio" type="radio" name="question-${questionIdx}" value=${idx} />
                       <label for="question-${questionIdx}-response-${idx}">${option.text.trim()}</label>
                     </li>
                   `)}
@@ -86,7 +93,7 @@ class VHome extends LitElement {
               </li>
             `)}
             </ol>
-            <e-button @click=${this.validate}>
+            <e-button ?disabled=${this.isFormValidated} @click=${this.validate}>
               <span>Validar test</span>
             </e-button>
           `)}
@@ -112,6 +119,12 @@ class VHome extends LitElement {
 
   setQuestions(value) {
     this.questions = value
+  }
+
+  clearQuestion(ev) {
+    const radioChecked = ev.target.parentElement.parentElement.querySelector('.v-home__radio:checked')
+
+    if (radioChecked) radioChecked.checked = false
   }
 
   shakeOptions(questions) {
@@ -246,7 +259,7 @@ class VHome extends LitElement {
     const isQuestions = e.target.id === this.inputFileQuestionsId
     let reader = new FileReader()
 
-    if (!file) return // Must not follow if file doesn't exists
+    if (!file) return // Must not continue if file doesn't exists
 
     if (isQuestions) {
       this.setLastQuestionsFile(file)
@@ -276,13 +289,15 @@ class VHome extends LitElement {
 
     if (this.isFormValidated) return // Must not revalidate form again
 
+    let flag = true
     const numOfQuestions = this.questions.length
     const nonMarkedFields = this.getNonMarkedFields(numOfQuestions)
 
     if (nonMarkedFields.length > 0) {
-      alert(`Las siguientes preguntas están sin responder: ${nonMarkedFields.join(', ')}`)
-      return
+      flag = confirm(`Las siguientes preguntas están sin responder: ${nonMarkedFields.join(', ')}. ¿Quieres continuar?`)
     }
+
+    if (!flag) return
 
     this.showResultToUser(numOfQuestions)
     this.isFormValidated = true
@@ -310,9 +325,11 @@ class VHome extends LitElement {
       const radiogroup = elements.namedItem(`question-${i}`)
 
       for(let radio of radiogroup.values()) {
-        if (radio.getAttribute('mark') === 'true') {
+        const { isSolution } = this.questions[i].options[radio.value]
+
+        if (isSolution) {
           radio.classList.add('is-correct')
-        } else if (radio.getAttribute('mark') === 'false' && radio.checked)  {
+        } else if (!isSolution && radio.checked)  {
           radio.classList.add('is-wrong')
         }
 
