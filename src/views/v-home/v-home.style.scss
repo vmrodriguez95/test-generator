@@ -59,6 +59,16 @@
     margin: 0 0 space(1);
   }
 
+  &__clear {
+    background: none;
+    border: 0;
+    cursor: pointer;
+
+    * {
+      pointer-events: none;
+    }
+  }
+
   &__options {
     padding-left: space(1);
     list-style-type: none;
