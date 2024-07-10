@@ -186,19 +186,23 @@ class VHome extends LitElement {
 
         for(let k = 0; k < textContent.items.length; k++) {
           let block = textContent.items[k]
+          let text
 
           if (block.str.match(/^\d+\.$/g)) { // Init question number.
-            isStatement = true
-
             questionNumber = parseInt(block.str.trim().replace('.', '')) - 1
             questions[questionNumber] = {
               statement: '',
               options: {}
             }
+            isStatement = true
           } else if (block.str.match(/^[ABCD]\.$/g)) { // Init response option
-            isStatement = false
             responseMark = block.str.replace('.', '')
             questions[questionNumber].options[responseMark] = { text: '', isSolution: false }
+            isStatement = false
+          } else if (block.str.match(/^[ABCD]\..+/g)) { // Init response option with text
+            [responseMark, text] = block.str.split('.')
+            questions[questionNumber].options[responseMark] = { text: text, isSolution: false }
+            isStatement = false
           } else if (isStatement) { // Fill question statement
             questions[questionNumber].statement += block.str
           } else { // Fill response text
