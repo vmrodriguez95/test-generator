@@ -1,0 +1,26 @@
+@import '../../styles/tools/tools.margins.scss';
+
+.e-notification {
+  display: flex;
+  position: absolute;
+  top: space(4);
+  right: space(4);
+  background-color: var(--color-secondary);
+  border-radius: var(--border-radius);
+  min-width: 300px;
+  padding: space(1) space(5) space(1) space(1);
+  box-sizing: border-box;
+
+  &__icon {
+    margin-right: space(1);
+  }
+
+  &__close {
+    position: absolute;
+    top: space(1);
+    right: space(1);
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+}
