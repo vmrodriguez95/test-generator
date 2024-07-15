@@ -1,5 +1,5 @@
 import { LitElement, html, css, unsafeCSS } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 
 import style from './e-button.style.scss?inline'
@@ -7,7 +7,16 @@ import style from './e-button.style.scss?inline'
 @customElement('e-button')
 class EButton extends LitElement {
 
+  @property({ type: String }) type = 'button'
+
   @state() isVisible = false
+
+  static formAssociated = true
+
+  constructor() {
+    super()
+    this._internals = this.attachInternals()
+  }
 
   /**
    * Component's styles
@@ -17,10 +26,6 @@ class EButton extends LitElement {
   /**
    * Lifecycle methods
    */
-  connectedCallback() {
-    super.connectedCallback()
-  }
-
   updated() {
     if (!this.isVisible) {
       setTimeout(() => this.isVisible = true, 100)
@@ -34,9 +39,22 @@ class EButton extends LitElement {
     })
 
     return html`
-      <button class=${classes}>
+      <button
+        type=${this.type}
+        class=${classes}
+        @click=${this.onClick}
+      >
         <slot></slot>
       </button>
     `
+  }
+
+  /**
+   * Methods
+   */
+  onClick() {
+    if (this.type === 'submit') {
+      this._internals?.form?.requestSubmit()
+    }
   }
 }

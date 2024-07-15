@@ -5,12 +5,12 @@
   display: inline-block;
 }
 
-:host([type="secondary"]) {
+:host([theme="secondary"]) {
   --eButtonBgColor: var(--color-secondary);
   --eButtonColor: var(--color-blue);
 }
 
-:host([type="light"]) {
+:host([theme="light"]) {
   --eButtonBgColor: var(--color-white);
   --eButtonColor: var(--color-yellow);
 }
@@ -20,7 +20,7 @@
   padding: 0;
   margin: 0;
   border-width: 0;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   background-color: var(--eButtonBgColor, var(--color-primary));
   box-shadow: -10px 10px 0 0 var(--eButtonColor, var(--color-red));
   width: 0;
@@ -32,8 +32,8 @@
 
   &--visible {
     padding: 13px 10px;
-    margin-left: 10px;
-    margin-bottom: 10px;
+    margin-left: var(--border-radius);
+    margin-bottom: var(--border-radius);
     opacity: 1;
     width: auto;
     height: auto;
