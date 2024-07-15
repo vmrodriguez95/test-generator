@@ -1,5 +1,5 @@
 import { html } from 'lit'
-import { getStorageItem } from '../utils/storage.utils.js'
+import { getStorageItem, resetStorage } from '../utils/storage.utils.js'
 
 const middleware = () => {
   const uid = getStorageItem('uid')
@@ -18,14 +18,21 @@ export const APP_ROUTES = [
     render: () => html`<v-login></v-login>`,
     enter: () => {
       if (middleware()) {
-        window.location.pathname = '/test'
+        window.location.pathname = '/test/'
       }
     }
   },
   {
-    path: '/test',
+    path: '/test/',
     render: () => html`<v-test></v-test>`,
     enter: middleware
+  },
+  {
+    path: '*',
+    enter: () => {
+      resetStorage()
+      location.pathname = '/'
+    }
   }
 ]
 
