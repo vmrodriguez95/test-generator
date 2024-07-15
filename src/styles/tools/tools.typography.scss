@@ -1,4 +1,4 @@
-@mixin heading--h1($font-weight: 700, $important: false) {
+@mixin heading--h1($font-weight: 700) {
   font-weight: $font-weight;
   font-size: 71px;
   line-height: 82px;
@@ -10,14 +10,14 @@
   line-height: 35px;
 }
 
-@mixin text--large($font-weight: 700, $important: null) {
-  font-weight: $font-weight $important;
-  font-size: 20px $important;
-  line-height: 24px $important;
+@mixin text--large($font-weight: 700) {
+  font-weight: $font-weight;
+  font-size: 20px;
+  line-height: 24px;
 }
 
-@mixin text($font-weight: 400, $important: null) {
-  font-weight: $font-weight $important;
-  font-size: 18px $important;
-  line-height: 20px $important;
+@mixin text($font-weight: 400) {
+  font-weight: $font-weight;
+  font-size: 18px;
+  line-height: 20px;
 }

@@ -6,10 +6,10 @@ import { when } from 'lit/directives/when.js'
 import { repeat } from 'lit/directives/repeat.js'
 import { shuffle } from '../../utils/actions.utils.js'
 
-import style from './v-test.style.scss?inline'
+import style from './v-home.style.scss?inline'
 
-@customElement('v-test')
-class VTest extends LitElement {
+@customElement('v-home')
+class VHome extends LitElement {
 
   /**
    * Properties and states
@@ -46,46 +46,46 @@ class VTest extends LitElement {
 
   render() {
     return html`
-      <section class="v-test">
-        <div class="v-test__head">
-          <div class="v-test__head__wrapper">
-            <e-button class="v-test__upload-questions" @click=${this.chooseFile.bind(this, 'questions')}>
+      <section class="v-home">
+        <div class="v-home__head">
+          <div class="v-home__head__wrapper">
+            <e-button class="v-home__upload-questions" @click=${this.chooseFile.bind(this, 'questions')}>
               <span>Subir archivo de preguntas</span>
             </e-button>
-            <input id=${this.inputFileQuestionsId} class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
+            <input id=${this.inputFileQuestionsId} class="v-home__file" type="file" accept=".pdf" @change=${this.onChange} />
 
             ${when(this.lastQuestionsFile && this.questions, () => html`
-              <e-button class="v-test__upload-solutions" type="secondary" @click=${this.chooseFile.bind(this, 'solutions')}>
+              <e-button class="v-home__upload-solutions" type="secondary" @click=${this.chooseFile.bind(this, 'solutions')}>
                 <span>Subir archivo de respuestas</span>
               </e-button>
-              <input id=${this.inputFileSolutionsId} class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
+              <input id=${this.inputFileSolutionsId} class="v-home__file" type="file" accept=".pdf" @change=${this.onChange} />
             `)}
           </div>
         </div>
 
         ${when(this.isFormValidated, () => html`
-          <e-button type="secondary" class="v-test__reload" @click=${this.reloadForm}>
+          <e-button type="secondary" class="v-home__reload" @click=${this.reloadForm}>
             <e-icon icon="reload" size="sm"></e-icon>
           </e-button>  
         `)}
 
-        <form class="v-test__form" @submit=${this.validate}>
+        <form class="v-home__form" @submit=${this.validate}>
           ${when(this.areSolutionsLoaded, () => html`
-            <ol class="v-test__questions">
+            <ol class="v-home__questions">
             ${repeat(this.questions, (question) => question.statement, (question, questionIdx) => html`
-              <li class="v-test__question">
-                <p class="v-test__statement">
+              <li class="v-home__question">
+                <p class="v-home__statement">
                   ${question.statement.trim()}
                   ${when(!this.isFormValidated, () => html`
-                    <button class="v-test__clear" @click=${this.clearQuestion} type="button">
+                    <button class="v-home__clear" @click=${this.clearQuestion} type="button">
                       <e-icon icon="broom" size="s"></e-icon>
                     </button>
                   `)}
                 </p>
-                <ul class="v-test__options">
+                <ul class="v-home__options">
                   ${map(question.options, (option, idx) => html`
-                    <li class="v-test__option">
-                      <input id="question-${questionIdx}-response-${idx}" class="v-test__radio" type="radio" name="question-${questionIdx}" value=${idx} />
+                    <li class="v-home__option">
+                      <input id="question-${questionIdx}-response-${idx}" class="v-home__radio" type="radio" name="question-${questionIdx}" value=${idx} />
                       <label for="question-${questionIdx}-response-${idx}">${option.text.trim()}</label>
                     </li>
                   `)}
@@ -122,7 +122,7 @@ class VTest extends LitElement {
   }
 
   clearQuestion(ev) {
-    const radioChecked = ev.target.parentElement.parentElement.querySelector('.v-test__radio:checked')
+    const radioChecked = ev.target.parentElement.parentElement.querySelector('.v-home__radio:checked')
 
     if (radioChecked) radioChecked.checked = false
   }
@@ -142,7 +142,7 @@ class VTest extends LitElement {
   }
 
   resetRadios() {
-    this.shadowRoot.querySelectorAll('.v-test__radio').forEach((radio) => {
+    this.shadowRoot.querySelectorAll('.v-home__radio').forEach((radio) => {
       radio.checked = false
       radio.disabled = false
       radio.classList.remove('is-correct', 'is-wrong')
