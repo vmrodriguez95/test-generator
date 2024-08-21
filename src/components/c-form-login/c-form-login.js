@@ -26,7 +26,6 @@ class CFormLogin extends LitElement {
       <form class=${elementName} @submit=${this.onSubmit}>
         <fieldset class="${elementName}__fieldset">
           <legend class="${elementName}__legend">A<br/>estudiar</legend>
-          <e-icon icon="paper-plane" size="lg"></e-icon>
           <e-input
             id="username"
             label="Username"

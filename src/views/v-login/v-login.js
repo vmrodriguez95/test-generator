@@ -28,18 +28,17 @@ class VLogin extends LitElement {
    */
   render() {
     return html`
-      <section class=${elementName}>
-        <div class="${elementName}__wrapper">
+      <main class=${elementName}>
+        <section class="${elementName}__wrapper">
           <c-form-login @submit=${this.onSubmit}></c-form-login>
-        </div>
-      </section>
+        </section>
+      </main>
     `
   }
 
   /**
    * Methods
    */
-
   onSubmit(ev) {
     const { username, password } = ev.detail
 

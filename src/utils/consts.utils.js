@@ -1,4 +1,8 @@
+const STATICS_PATHNAME = '/static'
+
 export const STORAGE_KEY = 'tg'
+
+export const IMAGES_PATHNAME = `${STATICS_PATHNAME}/images`
 
 export const DEFAULT_ERROR_MESSAGE = 'Ocurrio un error inesperado'
 
