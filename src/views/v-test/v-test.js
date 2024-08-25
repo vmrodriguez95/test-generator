@@ -15,23 +15,15 @@ class VTest extends LitElement {
   /**
    * Properties and states
    */
-  @state() questions
-
-  @state() lastQuestionsFile
-
-  @state() lastSolutionsFile
-
-  @state() areSolutionsLoaded = false
+  @state() questions = []
 
   @state() isFormValidated = false
 
   @query('form') form
 
+  @query('#upload-questions') questionsInputEl
+
   dbController = new DBController(this)
-
-  inputFileQuestionsId = 'upload-questions'
-
-  inputFileSolutionsId = 'upload-solutions'
 
   /**
    * Component's styles
@@ -53,17 +45,10 @@ class VTest extends LitElement {
         <section class="v-test">
           <div class="v-test__head">
             <div class="v-test__head__wrapper">
-              <e-button class="v-test__upload-questions" @click=${this.chooseFile.bind(this, 'questions')}>
+              <e-button @click=${this.openFileBrowser}>
                 <span>Subir examen</span>
               </e-button>
-              <input id=${this.inputFileQuestionsId} class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
-
-              ${when(this.lastQuestionsFile && this.questions, () => html`
-                <e-button class="v-test__upload-solutions" type="secondary" @click=${this.chooseFile.bind(this, 'solutions')}>
-                  <span>Subir archivo de respuestas</span>
-                </e-button>
-                <input id=${this.inputFileSolutionsId} class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
-              `)}
+              <input id="upload-questions" class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
             </div>
           </div>
 
@@ -74,7 +59,7 @@ class VTest extends LitElement {
           `)}
 
           <form class="v-test__form" @submit=${this.validate}>
-            ${when(this.areSolutionsLoaded, () => html`
+            ${when(this.questions.length > 0, () => html`
               <ol class="v-test__questions">
               ${repeat(this.questions, (question) => question.statement, (question, questionIdx) => html`
                 <li class="v-test__question">
@@ -87,7 +72,7 @@ class VTest extends LitElement {
                     `)}
                   </p>
                   <ul class="v-test__options">
-                    ${map(question.options, (option, idx) => html`
+                    ${map(Object.values(question.options), (option, idx) => html`
                       <li class="v-test__option">
                         <input id="question-${questionIdx}-response-${idx}" class="v-test__radio" type="radio" name="question-${questionIdx}" value=${idx} />
                         <label for="question-${questionIdx}-response-${idx}">${option.text.trim()}</label>
@@ -112,14 +97,6 @@ class VTest extends LitElement {
    */
   async getPdf(arrayBuffer) {
     return await PDFJS.getDocument({ data: arrayBuffer }).promise
-  }
-
-  setLastQuestionsFile(value) {
-    this.lastQuestionsFile = value
-  }
-
-  setLastSolutionsFile(value) {
-    this.lastSolutionsFile = value
   }
 
   setQuestions(value) {
@@ -154,27 +131,20 @@ class VTest extends LitElement {
     })
   }
 
-  chooseFile(type) {
-    let idInputFile = ''
-
-    switch(type) {
-      case 'questions':
-        idInputFile = `#${this.inputFileQuestionsId}`
-        break
-      case 'solutions':
-        idInputFile = `#${this.inputFileSolutionsId}`
-        break
-    }
-
-    this.shadowRoot.querySelector(idInputFile).click()
+  openFileBrowser() {
+    this.questionsInputEl.click()
   }
 
-  convertSolutionsInArray() {
-    this.questions = this.questions.map((question) => {
-      question.options = Object.values(question.options)
+  isQuestionNumber(value) {
+    return value.match(/^\d+\.$/g)
+  }
 
-      return question
-    })
+  isOptionMark(value) {
+    return value.match(/^[ABCD]\.$/g)
+  }
+
+  isOptionMarkWithText(value) {
+    return value.match(/^[ABCD]\..+/g)
   }
 
   async handlerQuestionsPdf(pdf) {
@@ -193,25 +163,36 @@ class VTest extends LitElement {
           let block = textContent.items[k]
           let text
 
-          if (block.str.match(/^\d+\.$/g)) { // Init question number.
+          if (this.isQuestionNumber(block.str)) { // Init question number.
             questionNumber = parseInt(block.str.trim().replace('.', '')) - 1
             questions[questionNumber] = {
               statement: '',
               options: {}
             }
             isStatement = true
-          } else if (block.str.match(/^[ABCD]\.$/g)) { // Init response option
+          } else if (this.isOptionMark(block.str)) { // Test if options is alone and has no text. PS: A.
             responseMark = block.str.replace('.', '')
-            questions[questionNumber].options[responseMark] = { text: '', isSolution: false }
+            questions[questionNumber].options[responseMark] = {
+              text: '',
+              isSolution: false
+            }
             isStatement = false
-          } else if (block.str.match(/^[ABCD]\..+/g)) { // Init response option with text
+          } else if (this.isOptionMarkWithText(block.str)) { // Test if option has text. PS: A. bla bla
             [responseMark, text] = block.str.split('.')
-            questions[questionNumber].options[responseMark] = { text: text, isSolution: false }
+            const isSolution = /##$/g.test(text) // If option text ends with double hastag (##), it's the solution
+
+            questions[questionNumber].options[responseMark] = {
+              text: text.replace('##', ''),
+              isSolution
+            }
             isStatement = false
           } else if (isStatement) { // Fill question statement
             questions[questionNumber].statement += block.str
           } else { // Fill response text
-            questions[questionNumber].options[responseMark].text += block.str
+            if (block.str !== '' && block.str !== ' ') {
+              questions[questionNumber].options[responseMark].isSolution = /##$/g.test(block.str)
+            }
+            questions[questionNumber].options[responseMark].text += block.str.replace('##', '')
           }
         }
       }
@@ -224,73 +205,22 @@ class VTest extends LitElement {
     }
   }
 
-  async handlerSolutionsPdf(pdf) {
-    try {
-      let pdfText = ''
-      let solutions = []
-      const page = await pdf.getPage(1)
-      const textContent = await page.getTextContent()
-
-      for(let k = 0; k < textContent.items.length; k++) {
-        let block = textContent.items[k]
-
-        pdfText += block.str
-      }
-
-      solutions = pdfText.split('//')
-
-      if (solutions.length < this.questions.length) {
-        alert('Parece que hay MENOS respuestas que preguntas. Por favor, revisa que están todas las respuestas. En caso de ser así, revisa que todas cumplen el formato -> 1. A // 2. A // 3. B // ...')
-        return
-      } else if (solutions.length > this.questions.length) {
-        alert('Parece que hay MÁS respuestas que preguntas. Por favor, revisa que están todas las respuestas. En caso de ser así, revisa que todas cumplen el formato -> 1. A // 2. A // 3. B // ...')
-        return
-      }
-
-      solutions.forEach((item) => {
-        const [question, solution] = item.split('.')
-
-        this.questions[parseInt(question.trim()) - 1].options[solution.trim()].isSolution = true
-      })
-
-      this.convertSolutionsInArray()
-
-      this.areSolutionsLoaded = true
-      this.dbController.uploadExam('test-example', this.questions) // TODO: Change id parameter
-    } catch(error) {
-      alert('Formato del pdf incorrecto. Revisa que se cumple el formato -> 1. A // 2. A // 3. B // ... Si no sabes qué ocurre puedes recurrir a tu programador de confianza.')
-      // eslint-disable-next-line no-console
-      console.log(error)
-    }
-  }
-
   onChange(e) {
     const file = e.target.files[0]
-    const isQuestions = e.target.id === this.inputFileQuestionsId
     let reader = new FileReader()
 
     if (!file) return // Must not continue if file doesn't exists
 
-    if (isQuestions) {
-      this.setLastQuestionsFile(file)
-    } else {
-      this.setLastSolutionsFile(file)
-    }
-
-    reader.addEventListener('load', this.handlerReaderLoad.bind(this, reader, isQuestions))
+    reader.addEventListener('load', this.handlerReaderLoad.bind(this, reader))
 
     reader.readAsArrayBuffer(file)
   }
 
-  async handlerReaderLoad(reader, isQuestions) {
+  async handlerReaderLoad(reader) {
     const arrayBuffer = new Uint8Array(reader.result)
     const pdf = await this.getPdf(arrayBuffer)
 
-    if (isQuestions) {
-      this.handlerQuestionsPdf(pdf)
-    } else {
-      this.handlerSolutionsPdf(pdf)
-    }
+    this.handlerQuestionsPdf(pdf)
   }
 
   validate(e) {
