@@ -5,6 +5,7 @@ import { map } from 'lit/directives/map.js'
 import { when } from 'lit/directives/when.js'
 import { repeat } from 'lit/directives/repeat.js'
 import { shuffle } from '../../utils/actions.utils.js'
+import { DBController } from '../../controllers/db.controller.js'
 
 import style from './v-test.style.scss?inline'
 
@@ -26,6 +27,8 @@ class VTest extends LitElement {
 
   @query('form') form
 
+  dbController = new DBController(this)
+
   inputFileQuestionsId = 'upload-questions'
 
   inputFileSolutionsId = 'upload-solutions'
@@ -46,59 +49,61 @@ class VTest extends LitElement {
 
   render() {
     return html`
-      <section class="v-test">
-        <div class="v-test__head">
-          <div class="v-test__head__wrapper">
-            <e-button class="v-test__upload-questions" @click=${this.chooseFile.bind(this, 'questions')}>
-              <span>Subir archivo de preguntas</span>
-            </e-button>
-            <input id=${this.inputFileQuestionsId} class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
-
-            ${when(this.lastQuestionsFile && this.questions, () => html`
-              <e-button class="v-test__upload-solutions" type="secondary" @click=${this.chooseFile.bind(this, 'solutions')}>
-                <span>Subir archivo de respuestas</span>
+      <m-layout>
+        <section class="v-test">
+          <div class="v-test__head">
+            <div class="v-test__head__wrapper">
+              <e-button class="v-test__upload-questions" @click=${this.chooseFile.bind(this, 'questions')}>
+                <span>Subir examen</span>
               </e-button>
-              <input id=${this.inputFileSolutionsId} class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
-            `)}
+              <input id=${this.inputFileQuestionsId} class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
+
+              ${when(this.lastQuestionsFile && this.questions, () => html`
+                <e-button class="v-test__upload-solutions" type="secondary" @click=${this.chooseFile.bind(this, 'solutions')}>
+                  <span>Subir archivo de respuestas</span>
+                </e-button>
+                <input id=${this.inputFileSolutionsId} class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
+              `)}
+            </div>
           </div>
-        </div>
 
-        ${when(this.isFormValidated, () => html`
-          <e-button type="secondary" class="v-test__reload" @click=${this.reloadForm}>
-            <e-icon icon="reload" size="sm"></e-icon>
-          </e-button>  
-        `)}
-
-        <form class="v-test__form" @submit=${this.validate}>
-          ${when(this.areSolutionsLoaded, () => html`
-            <ol class="v-test__questions">
-            ${repeat(this.questions, (question) => question.statement, (question, questionIdx) => html`
-              <li class="v-test__question">
-                <p class="v-test__statement">
-                  ${question.statement.trim()}
-                  ${when(!this.isFormValidated, () => html`
-                    <button class="v-test__clear" @click=${this.clearQuestion} type="button">
-                      <e-icon icon="broom" size="s"></e-icon>
-                    </button>
-                  `)}
-                </p>
-                <ul class="v-test__options">
-                  ${map(question.options, (option, idx) => html`
-                    <li class="v-test__option">
-                      <input id="question-${questionIdx}-response-${idx}" class="v-test__radio" type="radio" name="question-${questionIdx}" value=${idx} />
-                      <label for="question-${questionIdx}-response-${idx}">${option.text.trim()}</label>
-                    </li>
-                  `)}
-                </ul>
-              </li>
-            `)}
-            </ol>
-            <e-button ?disabled=${this.isFormValidated} @click=${this.validate}>
-              <span>Validar test</span>
-            </e-button>
+          ${when(this.isFormValidated, () => html`
+            <e-button type="secondary" class="v-test__reload" @click=${this.reloadForm}>
+              <e-icon icon="reload" size="sm"></e-icon>
+            </e-button>  
           `)}
-        </form>
-      </section>
+
+          <form class="v-test__form" @submit=${this.validate}>
+            ${when(this.areSolutionsLoaded, () => html`
+              <ol class="v-test__questions">
+              ${repeat(this.questions, (question) => question.statement, (question, questionIdx) => html`
+                <li class="v-test__question">
+                  <p class="v-test__statement">
+                    ${question.statement.trim()}
+                    ${when(!this.isFormValidated, () => html`
+                      <button class="v-test__clear" @click=${this.clearQuestion} type="button">
+                        <e-icon icon="broom" size="s"></e-icon>
+                      </button>
+                    `)}
+                  </p>
+                  <ul class="v-test__options">
+                    ${map(question.options, (option, idx) => html`
+                      <li class="v-test__option">
+                        <input id="question-${questionIdx}-response-${idx}" class="v-test__radio" type="radio" name="question-${questionIdx}" value=${idx} />
+                        <label for="question-${questionIdx}-response-${idx}">${option.text.trim()}</label>
+                      </li>
+                    `)}
+                  </ul>
+                </li>
+              `)}
+              </ol>
+              <e-button ?disabled=${this.isFormValidated} @click=${this.validate}>
+                <span>Validar test</span>
+              </e-button>
+            `)}
+          </form>
+        </section>
+      </m-layout>
     `
   }
 
@@ -251,6 +256,7 @@ class VTest extends LitElement {
       this.convertSolutionsInArray()
 
       this.areSolutionsLoaded = true
+      this.dbController.uploadExam('test-example', this.questions) // TODO: Change id parameter
     } catch(error) {
       alert('Formato del pdf incorrecto. Revisa que se cumple el formato -> 1. A // 2. A // 3. B // ... Si no sabes qué ocurre puedes recurrir a tu programador de confianza.')
       // eslint-disable-next-line no-console

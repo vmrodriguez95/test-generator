@@ -13,7 +13,7 @@ const entryNames = 'app'
 
 // Bundle generation
 const excludes = []
-const folds = ['elements', 'components', 'views']
+const folds = ['elements', 'components', 'modules', 'views']
 export const bundles = []
 export const styleBundles = [
   'normalize.css',
@@ -111,7 +111,7 @@ function getBuildConfig(type, env, files) {
     define: {
       EICON_LIST: JSON.stringify(getIconList()),
       FIREBASE: JSON.stringify({
-        apiKey: process.env.API_KEY,
+        apiKey: process.env.APIKEY,
         authDomain: process.env.AUTH_DOMAIN,
         databaseUrl: process.env.DATABASE_URL,
         projectId: process.env.PROJECT_ID,

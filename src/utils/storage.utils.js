@@ -7,7 +7,6 @@ function getStorage() {
 }
 
 export function getStorageItem(key) {
-
   return getStorage()[key]
 }
 

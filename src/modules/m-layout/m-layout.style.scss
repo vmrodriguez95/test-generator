@@ -1,0 +1,19 @@
+@import '../../styles/tools/tools.margins.scss';
+
+.m-layout {
+  height: 100%;
+
+  &__wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: var(--grid-wrapper);
+    margin: 0 auto;
+    position: relative;
+  }
+
+  &__content {
+    width: 100%;
+    padding-left: 300px;
+    box-sizing: border-box;
+  }
+}

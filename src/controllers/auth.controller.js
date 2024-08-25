@@ -2,11 +2,10 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { setStorageItem } from '../utils/storage.utils.js'
 import { DEFAULT_ERROR_MESSAGE, FIREBASE_ERROR_MESSAGES } from '../utils/consts.utils.js'
+import { DEFAULT_INTERNAL_PATHNAME } from '../utils/routes.utils.js'
 
 export class AuthController {
   host
-
-  firebaseApp
 
   constructor(host) {
     this.host = host
@@ -30,7 +29,7 @@ export class AuthController {
       .then((userCredential) => {
         // Signed in
         setStorageItem('uid', userCredential.user.uid)
-        location.href = '/test'
+        window.location.href = DEFAULT_INTERNAL_PATHNAME
       })
       .catch((error) => {
         const errorCode = error.code

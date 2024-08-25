@@ -42,7 +42,7 @@
   }
 
   ::slotted(*) {
-    @include text--large(700);
+    @include text--large;
     text-decoration: none;
     color: var(--color-black);
     text-shadow: 0 4px 0 var(--eButtonColor, var(--color-red));
