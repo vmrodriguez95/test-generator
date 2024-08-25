@@ -9,7 +9,7 @@
   }
 
   ::slotted(h1) {
-    @include heading--h1(700);
+    @include heading--h1;
     margin: 0 0 40px;
     text-shadow: 4px 4px 0px var(--color-blue),
     8px 8px 0px var(--color-secondary),
@@ -18,12 +18,12 @@
   }
   
   ::slotted(h3) {
-    @include heading--h3(700);
+    @include heading--h3;
     margin: 0 0 10px;
   }
 
   ::slotted(h5) {
-    @include text--large(700);
+    @include text--large;
     margin: 0 0 10px;
   }
 

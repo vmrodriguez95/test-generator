@@ -1,21 +1,13 @@
 import { LitElement, html, css, unsafeCSS } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement } from 'lit/decorators.js'
 import { IMAGES_PATHNAME } from '../../utils/consts.utils.js'
-import { DBController } from '../../controllers/db.controller.js'
 
-import style from './e-layout.style.scss?inline'
+import style from './m-layout.style.scss?inline'
 
-const elementName = 'e-layout'
+const elementName = 'm-layout'
 
 @customElement(elementName)
-class ELayout extends LitElement {
-  /**
-   * Properties
-   */
-  @state() username = ''
-
-  dbController = new DBController(this)
-
+class MLayout extends LitElement {
   /**
    * Component's styles
    */
@@ -36,8 +28,10 @@ class ELayout extends LitElement {
           ></e-image>
         </c-hero>
         <div class=${elementName}__wrapper>
-          <c-menu></c-menu>
-          <slot></slot>
+          <c-tree></c-tree>
+          <div class=${elementName}__content>
+            <slot></slot>
+          </div>
         </div>
       </main>
     `

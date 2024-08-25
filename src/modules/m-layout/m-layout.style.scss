@@ -1,6 +1,6 @@
 @import '../../styles/tools/tools.margins.scss';
 
-.e-layout {
+.m-layout {
   height: 100%;
 
   &__wrapper {
@@ -11,21 +11,9 @@
     position: relative;
   }
 
-  &__navbar {
-    position: fixed;
-    top: space(16);
-    bottom: space(8);
-    width: 100%;
-    max-width: 300px;
-    background-color: var(--color-white);
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 4px 11px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: space(4);
-    box-sizing: border-box;
-    text-align: center;
-  }
-
   &__content {
+    width: 100%;
+    padding-left: 300px;
     box-sizing: border-box;
   }
 }

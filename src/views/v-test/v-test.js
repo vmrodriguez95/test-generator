@@ -5,6 +5,7 @@ import { map } from 'lit/directives/map.js'
 import { when } from 'lit/directives/when.js'
 import { repeat } from 'lit/directives/repeat.js'
 import { shuffle } from '../../utils/actions.utils.js'
+import { DBController } from '../../controllers/db.controller.js'
 
 import style from './v-test.style.scss?inline'
 
@@ -25,6 +26,8 @@ class VTest extends LitElement {
   @state() isFormValidated = false
 
   @query('form') form
+
+  dbController = new DBController(this)
 
   inputFileQuestionsId = 'upload-questions'
 
@@ -51,7 +54,7 @@ class VTest extends LitElement {
           <div class="v-test__head">
             <div class="v-test__head__wrapper">
               <e-button class="v-test__upload-questions" @click=${this.chooseFile.bind(this, 'questions')}>
-                <span>Subir archivo de preguntas</span>
+                <span>Subir examen</span>
               </e-button>
               <input id=${this.inputFileQuestionsId} class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
 
@@ -253,6 +256,7 @@ class VTest extends LitElement {
       this.convertSolutionsInArray()
 
       this.areSolutionsLoaded = true
+      this.dbController.uploadExam('test-example', this.questions) // TODO: Change id parameter
     } catch(error) {
       alert('Formato del pdf incorrecto. Revisa que se cumple el formato -> 1. A // 2. A // 3. B // ... Si no sabes qué ocurre puedes recurrir a tu programador de confianza.')
       // eslint-disable-next-line no-console
