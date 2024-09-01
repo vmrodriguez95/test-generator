@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { build, context } from 'esbuild'
 import { sassPlugin } from 'esbuild-sass-plugin'
 import { minifyTemplates, writeFiles } from 'esbuild-minify-templates'
@@ -12,12 +13,13 @@ const entryNames = 'app'
 
 // Bundle generation
 const excludes = []
-const folds = ['elements', 'views']
+const folds = ['elements', 'components', 'modules', 'views']
 export const bundles = []
 export const styleBundles = [
   'normalize.css',
   './src/styles/generic/generic.fonts.scss',
   './src/styles/variables/variables.colors.scss',
+  './src/styles/variables/variables.borders.scss',
   './src/styles/variables/variables.fonts.scss',
   './src/styles/variables/variables.transitions.scss',
   './src/styles/variables/variables.grid.scss',
@@ -107,7 +109,16 @@ function getBuildConfig(type, env, files) {
     },
     external: ['static'],
     define: {
-      EICON_LIST: JSON.stringify(getIconList())
+      EICON_LIST: JSON.stringify(getIconList()),
+      FIREBASE: JSON.stringify({
+        apiKey: process.env.APIKEY,
+        authDomain: process.env.AUTH_DOMAIN,
+        databaseUrl: process.env.DATABASE_URL,
+        projectId: process.env.PROJECT_ID,
+        storageBucket: process.env.STORAGE_BUCKET,
+        messagingSenderId: process.env.MESSAGING_SENDER_ID,
+        appId: process.env.APP_ID
+      })
     }
   }
 }

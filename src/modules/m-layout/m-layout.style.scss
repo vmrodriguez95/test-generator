@@ -1,0 +1,54 @@
+@import '../../styles/tools/tools.margins.scss';
+@import '../../styles/tools/tools.typography.scss';
+
+.m-layout {
+  height: 100%;
+
+  &__wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: var(--grid-wrapper);
+    margin: 0 auto;
+    position: relative;
+  }
+
+  &__aside {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: space(10);
+    bottom: space(8);
+    width: 100%;
+    max-width: 300px;
+    background-color: var(--color-white);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 4px 11px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: space(4);
+    box-sizing: border-box;
+  }
+
+  &__user {
+    @include text--large(400);
+    display: flex;
+    align-items: center;
+    margin: 0 0 space(4);
+
+    e-icon {
+      margin-right: space(1);
+    }
+  }
+
+  &__logout {
+    @include text;
+    margin-top: auto;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  &__content {
+    width: 100%;
+    padding-left: 300px;
+    box-sizing: border-box;
+  }
+}

@@ -1,7 +1,8 @@
-@import '../../styles/variables/variables.grid.scss';
+@import '../../styles/tools/tools.grid.scss';
 @import '../../styles/tools/tools.margins.scss';
+@import '../../styles/tools/tools.typography.scss';
 
-.v-home {
+.v-test {
   &__head {
     border-bottom: 1px solid var(--color-gray);
     padding: space(1);
@@ -29,12 +30,6 @@
 
   &__file {
     display: none;
-  }
-
-  &__reload {
-    position: fixed;
-    top: space(1);
-    right: space(1);
   }
 
   &__form {
@@ -101,5 +96,16 @@
       color: var(--color-error);
       font-weight: 700;
     }
+  }
+
+  &__bottom {
+    display: flex;
+
+  }
+
+  &__result {
+    @include text;
+    color: var(--color-black);
+    margin-left: space(2);
   }
 }
