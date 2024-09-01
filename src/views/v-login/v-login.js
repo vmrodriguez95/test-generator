@@ -2,7 +2,7 @@ import { consume } from '@lit/context'
 import { LitElement, html, css, unsafeCSS } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { AuthController } from '../../controllers/auth.controller.js'
-import { notificationContext } from '../../context/notifcation.context.js'
+import { firebaseContext } from '../../context/firebase.context.js'
 import style from './v-login.style.scss?inline'
 
 const elementName = 'v-login'
@@ -13,8 +13,8 @@ class VLogin extends LitElement {
   /**
    * Properties and states
    */
-  @consume({ context: notificationContext, subscribe: true })
-  @property({ attribute: false }) notification
+  @consume({ context: firebaseContext, subscribe: true })
+  @property({ attribute: false }) firebase
 
   authController = new AuthController(this)
 
@@ -39,9 +39,9 @@ class VLogin extends LitElement {
   /**
    * Methods
    */
-  onSubmit(ev) {
+  async onSubmit(ev) {
     const { username, password } = ev.detail
 
-    this.authController.requestSignIn(username, password)
+    await this.authController.signIn(username, password)
   }
 }
