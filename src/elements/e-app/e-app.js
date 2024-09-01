@@ -2,9 +2,8 @@ import { provide } from '@lit/context'
 import { Router } from '@lit-labs/router'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { when } from 'lit/directives/when.js'
-import { APP_ROUTES } from '../../utils/routes.utils.js'
-import { notificationContext } from '../../context/notifcation.context.js'
+import { firebaseContext } from '../../context/firebase.context.js'
+import { RouterController } from '../../controllers/router.controller.js'
 
 @customElement('e-app')
 class EApp extends LitElement {
@@ -12,33 +11,31 @@ class EApp extends LitElement {
    * Sets custom props
    */
 
-  updateNotification = (value) => {
-    this.notification = {
+  updateFirebase = (value) => {
+    this.firebase = {
       value,
-      update: this.updateNotification
+      update: this.updateFirebase
     }
   }
 
-  @provide({ context: notificationContext })
+  @provide({ context: firebaseContext })
   @property({ type: Object })
-    notification = {
+    firebase = {
       value: undefined,
-      update: this.updateNotification
+      update: this.updateFirebase
     }
 
-  router = new Router(this, APP_ROUTES)
+  routerController = new RouterController(this)
+
+  router = new Router(this, this.routerController.getRoutes())
 
   /**
    * Renders template
    */
   render() {
     return html`
+      <!-- Create notifications -->
       ${this.router.outlet()}
-      ${when(this.notification.value, () => html`
-        <e-notification type=${this.notification.value.type}>
-          <p>${this.notification.value.message}</p>
-        </e-notification>
-      `)}
     `
   }
 }

@@ -1,11 +1,13 @@
 import * as PDFJS from 'pdfjs-dist'
+import { consume } from '@lit/context'
 import { LitElement, html, css, unsafeCSS } from 'lit'
-import { customElement, state, query } from 'lit/decorators.js'
+import { customElement, property, state, query } from 'lit/decorators.js'
 import { map } from 'lit/directives/map.js'
 import { when } from 'lit/directives/when.js'
 import { repeat } from 'lit/directives/repeat.js'
 import { shuffle } from '../../utils/actions.utils.js'
 import { DBController } from '../../controllers/db.controller.js'
+import { firebaseContext } from '../../context/firebase.context.js'
 
 import style from './v-test.style.scss?inline'
 
@@ -15,6 +17,9 @@ class VTest extends LitElement {
   /**
    * Properties and states
    */
+  @consume({ context: firebaseContext, subscribe: true })
+  @property({ attribute: false }) firebase
+
   @state() questions = []
 
   @state() correctAnswers = 0

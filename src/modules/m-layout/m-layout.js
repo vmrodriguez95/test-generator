@@ -1,6 +1,10 @@
+import { consume } from '@lit/context'
 import { LitElement, html, css, unsafeCSS } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 import { IMAGES_PATHNAME } from '../../utils/consts.utils.js'
+import { DBController } from '../../controllers/db.controller.js'
+import { AuthController } from '../../controllers/auth.controller.js'
+import { firebaseContext } from '../../context/firebase.context.js'
 
 import style from './m-layout.style.scss?inline'
 
@@ -9,6 +13,18 @@ const elementName = 'm-layout'
 @customElement(elementName)
 class MLayout extends LitElement {
   /**
+   * Properties
+   */
+  @consume({ context: firebaseContext, subscribe: true })
+  @property({ attribute: false }) firebase
+
+  @state() username = ''
+
+  dbController = new DBController(this)
+
+  authController = new AuthController(this)
+
+  /**
    * Component's styles
    */
   static styles = css`${unsafeCSS(style)}`
@@ -16,6 +32,12 @@ class MLayout extends LitElement {
   /*
    * Lifecycle methods
    */
+  connectedCallback() {
+    super.connectedCallback()
+
+    this.dbController.getUsername()
+  }
+
   render() {
     return html`
       <main class=${elementName}>
@@ -28,10 +50,14 @@ class MLayout extends LitElement {
           ></e-image>
         </c-hero>
         <div class=${elementName}__wrapper>
-          <c-tree></c-tree>
-          <div class=${elementName}__content>
+          <aside class=${elementName}__aside>
+            <p class="${elementName}__user"><e-icon icon="user" size="md"></e-icon> Hola, <strong>${this.username}</strong></p>
+            <c-tree></c-tree>
+            <button class="${elementName}__logout" @click=${this.authController.signOut}>Cerrar sesión</button>
+          </aside>
+          <section class=${elementName}__content>
             <slot></slot>
-          </div>
+          </section>
         </div>
       </main>
     `

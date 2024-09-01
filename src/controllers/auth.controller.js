@@ -1,11 +1,10 @@
-import { initializeApp } from 'firebase/app'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-import { setStorageItem } from '../utils/storage.utils.js'
-import { DEFAULT_ERROR_MESSAGE, FIREBASE_ERROR_MESSAGES } from '../utils/consts.utils.js'
-import { DEFAULT_INTERNAL_PATHNAME } from '../utils/routes.utils.js'
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { DEFAULT_INTERNAL_PATHNAME } from '../utils/consts.utils.js'
 
 export class AuthController {
   host
+
+  _auth
 
   constructor(host) {
     this.host = host
@@ -21,25 +20,27 @@ export class AuthController {
     // TODO
   }
 
-  requestSignIn(email, password) {
-    // eslint-disable-next-line no-undef
-    const auth = getAuth(initializeApp(FIREBASE))
+  signIn(email, password) {
+    try {
+      const { auth } = this.host.firebase.value
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        setStorageItem('uid', userCredential.user.uid)
-        window.location.href = DEFAULT_INTERNAL_PATHNAME
+      onAuthStateChanged(auth, (user) => {
+        if (user && location.pathname === '/') {
+          location.pathname = DEFAULT_INTERNAL_PATHNAME
+        }
       })
-      .catch((error) => {
-        const errorCode = error.code
-        const erroMessage = FIREBASE_ERROR_MESSAGES[errorCode]
 
-        this.host.notification.update({
-          type: 'error',
-          message: erroMessage || DEFAULT_ERROR_MESSAGE
-        })
-      })
+      signInWithEmailAndPassword(auth, email, password)
+    }
+    catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error trying to sign in: ', error)
+    }
+  }
+
+  async signOut() {
+    await signOut(this.host.firebase.value.auth)
+    location.pathname = '/'
   }
 }
 
