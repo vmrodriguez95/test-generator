@@ -1,5 +1,6 @@
 @import '../../styles/tools/tools.grid.scss';
 @import '../../styles/tools/tools.margins.scss';
+@import '../../styles/tools/tools.typography.scss';
 
 .v-test {
   &__head {
@@ -29,12 +30,6 @@
 
   &__file {
     display: none;
-  }
-
-  &__reload {
-    position: fixed;
-    top: space(1);
-    right: space(1);
   }
 
   &__form {
@@ -101,5 +96,16 @@
       color: var(--color-error);
       font-weight: 700;
     }
+  }
+
+  &__bottom {
+    display: flex;
+
+  }
+
+  &__result {
+    @include text;
+    color: var(--color-black);
+    margin-left: space(2);
   }
 }

@@ -17,6 +17,8 @@ class VTest extends LitElement {
    */
   @state() questions = []
 
+  @state() correctAnswers = 0
+
   @state() isFormValidated = false
 
   @query('form') form
@@ -51,13 +53,6 @@ class VTest extends LitElement {
               <input id="upload-questions" class="v-test__file" type="file" accept=".pdf" @change=${this.onChange} />
             </div>
           </div>
-
-          ${when(this.isFormValidated, () => html`
-            <e-button type="secondary" class="v-test__reload" @click=${this.reloadForm}>
-              <e-icon icon="reload" size="sm"></e-icon>
-            </e-button>  
-          `)}
-
           <form class="v-test__form" @submit=${this.validate}>
             ${when(this.questions.length > 0, () => html`
               <ol class="v-test__questions">
@@ -72,19 +67,28 @@ class VTest extends LitElement {
                     `)}
                   </p>
                   <ul class="v-test__options">
-                    ${map(Object.values(question.options), (option, idx) => html`
+                    ${map(Object.keys(question.options), (key, idx) => html`
                       <li class="v-test__option">
-                        <input id="question-${questionIdx}-response-${idx}" class="v-test__radio" type="radio" name="question-${questionIdx}" value=${idx} />
-                        <label for="question-${questionIdx}-response-${idx}">${option.text.trim()}</label>
+                        <input id="question-${questionIdx}-response-${idx}" class="v-test__radio" type="radio" name="question-${questionIdx}" value=${key} />
+                        <label for="question-${questionIdx}-response-${idx}">${question.options[key].text.trim()}</label>
                       </li>
                     `)}
                   </ul>
                 </li>
               `)}
               </ol>
-              <e-button ?disabled=${this.isFormValidated} @click=${this.validate}>
-                <span>Validar test</span>
-              </e-button>
+              <div class="v-test__bottom">
+                ${when(this.isFormValidated, () => html`
+                  <e-button theme="secondary" class="v-test__reload" @click=${this.reloadForm}>
+                    <span>Repetir examen</span>
+                  </e-button>
+                  <p class="v-test__result"><strong>Has acertado ${this.correctAnswers} preguntas de un total de ${this.questions.length}.</strong></p>
+                `, () => html`
+                  <e-button @click=${this.validate}>
+                    <span>Validar test</span>
+                  </e-button>
+                `)}
+              </div>
             `)}
           </form>
         </section>
@@ -109,18 +113,29 @@ class VTest extends LitElement {
     if (radioChecked) radioChecked.checked = false
   }
 
-  shakeOptions(questions) {
-    questions.forEach((question) => {
-      question.options = shuffle(Array.from(question.options))
-    })
+  shuffleOptions(question) {
+    const [ A, B, C, D ] = shuffle(Object.values(question.options))
+
+    question.options = { A, B, C, D }
   }
 
-  reloadForm() {
-    this.isFormValidated = false
-    this.resetRadios()
-    const newQuestions = shuffle(Array.from(this.questions))
-    this.shakeOptions(newQuestions)
-    this.setQuestions(newQuestions)
+  shuffleQuestions() {
+    let arrayLength = this.questions.length, aux, randomPos
+
+    // While there remain elements to shuffle...
+    while (arrayLength) {
+
+      // Pick a remaining element...
+      randomPos = Math.floor(Math.random() * arrayLength--)
+
+      // And swap it with the current element.
+      aux = this.questions[arrayLength]
+      this.questions[arrayLength] = this.questions[randomPos]
+      this.questions[randomPos] = aux
+
+      this.shuffleOptions(this.questions[randomPos])
+      this.shuffleOptions(this.questions[arrayLength])
+    }
   }
 
   resetRadios() {
@@ -129,6 +144,13 @@ class VTest extends LitElement {
       radio.disabled = false
       radio.classList.remove('is-correct', 'is-wrong')
     })
+  }
+
+  reloadForm() {
+    this.resetRadios()
+    this.shuffleQuestions()
+    this.correctAnswers = 0
+    this.isFormValidated = false
   }
 
   openFileBrowser() {
@@ -234,7 +256,7 @@ class VTest extends LitElement {
     const nonMarkedFields = this.getNonMarkedFields(numOfQuestions)
 
     if (nonMarkedFields.length > 0) {
-      flag = confirm(`Las siguientes preguntas están sin responder: ${nonMarkedFields.join(', ')}. ¿Quieres continuar?`)
+      flag = confirm(`¡¡¡ATENCIÓN!!! ¿De verdad quieres validar el examen? Las siguientes preguntas están sin responder: ${nonMarkedFields.join(', ')}.`)
     }
 
     if (!flag) return
@@ -259,6 +281,7 @@ class VTest extends LitElement {
   }
 
   showResultToUser(numOfQuestions) {
+    let correctAnswers = 0
     const { elements } = this.form
 
     for(let i = 0; i < numOfQuestions; i++) {
@@ -267,14 +290,19 @@ class VTest extends LitElement {
       for(let radio of radiogroup.values()) {
         const { isSolution } = this.questions[i].options[radio.value]
 
-        if (isSolution) {
+        if (isSolution && radio.checked) {
+          correctAnswers++
           radio.classList.add('is-correct')
-        } else if (!isSolution && radio.checked)  {
+        } else if (isSolution && !radio.checked) {
+          radio.classList.add('is-correct')
+        }  else if (!isSolution && radio.checked)  {
           radio.classList.add('is-wrong')
         }
 
         radio.disabled = true
       }
     }
+
+    this.correctAnswers = correctAnswers
   }
 }

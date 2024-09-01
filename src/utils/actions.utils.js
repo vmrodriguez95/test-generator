@@ -1,16 +1,16 @@
 export function shuffle(array) {
-  let m = array.length, t, i
+  let arrayLength = array.length, aux, randomPos
 
-  // While there remain elements to shuffle…
-  while (m) {
+  // While there remain elements to shuffle...
+  while (arrayLength) {
 
-    // Pick a remaining element…
-    i = Math.floor(Math.random() * m--)
+    // Pick a remaining element...
+    randomPos = Math.floor(Math.random() * arrayLength--)
 
     // And swap it with the current element.
-    t = array[m]
-    array[m] = array[i]
-    array[i] = t
+    aux = array[arrayLength]
+    array[arrayLength] = array[randomPos]
+    array[randomPos] = aux
   }
 
   return array
