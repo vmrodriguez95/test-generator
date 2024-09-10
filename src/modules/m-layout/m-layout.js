@@ -51,9 +51,17 @@ class MLayout extends LitElement {
         </c-hero>
         <div class=${elementName}__wrapper>
           <aside class=${elementName}__aside>
-            <p class="${elementName}__user"><e-icon icon="user" size="md"></e-icon> Hola, <strong>${this.username}</strong></p>
+            <div class="${elementName}__head">
+              <e-icon icon="user" size="md"></e-icon>
+              <p class="${elementName}__text">Hola, <strong>${this.username}</strong></p>
+            </div>
             <c-tree></c-tree>
-            <button class="${elementName}__logout" @click=${this.authController.signOut}>Cerrar sesión</button>
+            <div class="${elementName}__bottom">
+              <button class="${elementName}__logout" @click=${this.authController.signOut}>
+                <e-icon icon="logout"></e-icon>
+                Cerrar sesión
+              </button>
+            </div>
           </aside>
           <section class=${elementName}__content>
             <slot></slot>

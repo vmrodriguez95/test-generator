@@ -2,9 +2,34 @@
 @import '../../styles/tools/tools.typography.scss';
 
 .c-tree {
+  --eIconColor: var(--color-red);
+
+  button {
+    display: inline-flex;
+    font-family: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+
+    e-icon {
+      pointer-events: none;
+    }
+  }
+
+  &__add {
+    @include text(400);
+    color: var(--color-gray--medium);
+    display: flex;
+    align-items: center;
+    gap: 0 space(1);
+    margin-bottom: space(2);
+  }
+
   &__text {
-    @include text--large(400);
-    margin: 0 0 space(2);
+    @include text(400);
+    color: var(--color-gray--medium);
+    margin: 0;
   }
 
   &__treemap {
@@ -15,5 +40,67 @@
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: space(2) space(1);
+    margin-bottom: space(1);
+    position: relative;
+  }
+
+  &__input {
+    @include text(400);
+    color: var(--color-gray--medium);
+    box-sizing: border-box;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid var(--color-gray);
+  }
+
+  &__open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0 space(0.5);
+  }
+
+  &__popup {
+    display: none;
+    position: absolute;
+    top: 100%;
+    z-index: 1;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 4px 11px rgba(0, 0, 0, 0.1);
+    padding: space(1);
+
+    &--open {
+      display: block;
+    }
+  }
+
+  &__action {
+    @include text(400);
+    color: var(--color-gray--medium);
+    gap: space(1);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: space(3);
+      right: calc(100% - space(3));
+      display: block;
+      height: 1px;
+      background-color: var(--color-gray);
+      margin-top: space(0.5);
+      transition: right 0.3s ease-out;
+    }
+
+    &:hover::after {
+      right: 0;
+    }
   }
 }

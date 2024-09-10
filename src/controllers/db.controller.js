@@ -56,7 +56,7 @@ export class DBController {
           const snapshot = await get(child(this._dbRef, `exams/${this._uid}`))
 
           if (snapshot.exists()) {
-            this.host.exams = snapshot.val()
+            this.host.exams = this.orderByDate(snapshot.val(), 'asc')
           }
         }
       })
@@ -67,11 +67,32 @@ export class DBController {
     }
   }
 
+  addFolder(folder) {
+    set(child(this._dbRef, `exams/${this._uid}/${folder}`), {
+      createdAt: new Date().getTime()
+    })
+  }
+
+  removeFolder(folder) {
+    set(child(this._dbRef, `exams/${this._uid}/${folder}`), null)
+  }
+
   uploadExam(id, questions) {
     set(child(this._dbRef, `exams/${this._uid}/${id}`), {
       questions,
       uploaded: new Date().getTime()
     })
+  }
+
+  orderByDate(object, order) {
+    return Object.fromEntries(
+      Object.entries(object).sort((a, b) => {
+        if (order === 'asc') {
+          return a[1].createdAt - b[1].createdAt
+        }
+        return b[1].createdAt - a[1].createdAt
+      })
+    )
   }
 }
 

@@ -38,9 +38,8 @@ export class AuthController {
     }
   }
 
-  async signOut() {
-    await signOut(this.host.firebase.value.auth)
-    location.pathname = '/'
+  signOut() {
+    signOut(this.firebase.value.auth)
   }
 }
 
