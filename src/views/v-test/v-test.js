@@ -67,7 +67,7 @@ class VTest extends LitElement {
                     ${question.statement.trim()}
                     ${when(!this.isFormValidated, () => html`
                       <button class="v-test__clear" @click=${this.clearQuestion} type="button">
-                        <e-icon icon="broom" size="s"></e-icon>
+                        <e-icon icon="close" size="s"></e-icon>
                       </button>
                     `)}
                   </p>
