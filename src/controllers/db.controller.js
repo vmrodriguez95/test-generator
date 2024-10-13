@@ -20,16 +20,12 @@ export class DBController {
     this.startDBConnection()
   }
 
-  hostDisconnected() {
-    // TODO
-  }
-
   startDBConnection() {
     this._database = getDatabase(this.host.firebase.value.app)
     this._dbRef = ref(this._database)
   }
 
-  getUsername() {
+  requestUsername() {
     try {
       onAuthStateChanged(this.host.firebase.value.auth, async(user) => {
         if (user) {
@@ -48,7 +44,7 @@ export class DBController {
     }
   }
 
-  getExamns() {
+  requestExams() {
     try {
       onAuthStateChanged(this.host.firebase.value.auth, async(user) => {
         if (user) {
@@ -56,7 +52,9 @@ export class DBController {
           const snapshot = await get(child(this._dbRef, `exams/${this._uid}`))
 
           if (snapshot.exists()) {
-            this.host.exams = snapshot.val()
+            this.host.examsStructure = this.orderByDate(snapshot.val(), 'asc')
+          } else {
+            this.host.examsStructure = null
           }
         }
       })
@@ -67,11 +65,51 @@ export class DBController {
     }
   }
 
-  uploadExam(id, questions) {
-    set(child(this._dbRef, `exams/${this._uid}/${id}`), {
-      questions,
-      uploaded: new Date().getTime()
+  async requestItem(breadcrumbs) {
+    if (this._uid) {
+      const snapshot = await get(child(this._dbRef, `exams/${this._uid}/${breadcrumbs}`))
+
+      if (snapshot.exists()) {
+        return snapshot.val()
+      }
+    }
+  }
+
+  addItem(breadcrumbs, value = {}) {
+    if (this._uid) {
+      const newValue = Object.assign({}, { createdAt: new Date().getTime() }, value)
+
+      set(child(this._dbRef, `exams/${this._uid}/${breadcrumbs}`), newValue)
+    }
+  }
+
+  updateItem(breadcrumbs, newValue) {
+    if (this._uid) {
+      set(child(this._dbRef, `exams/${this._uid}/${breadcrumbs}`), newValue)
+    }
+  }
+
+  removeItem(breadcrumbs) {
+    if (this._uid) {
+      set(child(this._dbRef, `exams/${this._uid}/${breadcrumbs}`), null)
+    }
+  }
+
+  orderByDate(object, order) {
+    let objectOrdered = object
+
+    Object.keys(object).forEach(key => {
+      objectOrdered[key] = Object.fromEntries(
+        Object.entries(object[key]).sort((a, b) => {
+          if (order === 'asc') {
+            return a[1].createdAt - b[1].createdAt
+          }
+          return b[1].createdAt - a[1].createdAt
+        })
+      )
     })
+
+    return objectOrdered
   }
 }
 

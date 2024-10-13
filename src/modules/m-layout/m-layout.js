@@ -35,7 +35,7 @@ class MLayout extends LitElement {
   connectedCallback() {
     super.connectedCallback()
 
-    this.dbController.getUsername()
+    this.dbController.requestUsername()
   }
 
   render() {
@@ -51,9 +51,17 @@ class MLayout extends LitElement {
         </c-hero>
         <div class=${elementName}__wrapper>
           <aside class=${elementName}__aside>
-            <p class="${elementName}__user"><e-icon icon="user" size="md"></e-icon> Hola, <strong>${this.username}</strong></p>
-            <c-tree></c-tree>
-            <button class="${elementName}__logout" @click=${this.authController.signOut}>Cerrar sesión</button>
+            <div class="${elementName}__head">
+              <e-icon icon="user" size="md"></e-icon>
+              <p class="${elementName}__text">Hola, <strong>${this.username}</strong></p>
+            </div>
+            <c-tree class="${elementName}__tree"></c-tree>
+            <div class="${elementName}__bottom">
+              <button class="${elementName}__logout" @click=${this.authController.signOut}>
+                <e-icon icon="logout"></e-icon>
+                Cerrar sesión
+              </button>
+            </div>
           </aside>
           <section class=${elementName}__content>
             <slot></slot>

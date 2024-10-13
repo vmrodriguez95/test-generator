@@ -2,6 +2,7 @@
 @import '../../styles/tools/tools.typography.scss';
 
 .m-layout {
+  --eIconColor: var(--color-red);
   height: 100%;
 
   &__wrapper {
@@ -27,22 +28,38 @@
     box-sizing: border-box;
   }
 
-  &__user {
-    @include text--large(400);
+  &__text {
+    @include text(400);
+    margin: 0;
+  }
+
+  &__head {
     display: flex;
     align-items: center;
-    margin: 0 0 space(4);
+    margin: 0 0 space(2);
+    padding-bottom: space(2);
+    gap: 0 space(1);
+    border-bottom: 1px solid var(--color-gray--medium);
+  }
 
-    e-icon {
-      margin-right: space(1);
-    }
+  &__tree {
+    height: 100%;
+  }
+
+  &__bottom {
+    padding-top: space(2);
+    border-top: 1px solid var(--color-gray--medium);
   }
 
   &__logout {
+    font-family: inherit;
     @include text;
-    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 0 space(1);
     background: none;
     border: 0;
+    padding: 0;
     cursor: pointer;
   }
 
