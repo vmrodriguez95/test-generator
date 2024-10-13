@@ -224,7 +224,7 @@ class CTree extends LitElement {
     return breadcrumbs.replace(previousItemIdRegExp, newItemId)
   }
 
-  async addFolder(breadcrumbs) {
+  async addFolder(breadcrumbs = '') {
     const examName = prompt('¿Qué nombre le ponemos a carpeta nueva?')
 
     this.closeActualPopup()
@@ -239,7 +239,7 @@ class CTree extends LitElement {
     }
   }
 
-  async addExam(breadcrumbs) {
+  async addExam(breadcrumbs = '') {
     // Start process about to create new exam
     // If user add a correct file and controller can process it, updated method continue the task
     const newQuestions = await this.examController.startNewProcess()
