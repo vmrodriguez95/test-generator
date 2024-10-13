@@ -3,6 +3,7 @@ import { Router } from '@lit-labs/router'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { firebaseContext } from '../../context/firebase.context.js'
+import { examContext } from '../../context/exam.context.js'
 import { RouterController } from '../../controllers/router.controller.js'
 
 @customElement('e-app')
@@ -18,11 +19,25 @@ class EApp extends LitElement {
     }
   }
 
+  updateGlobalExam = (value) => {
+    this.globalExam = {
+      value,
+      update: this.updateGlobalExam
+    }
+  }
+
   @provide({ context: firebaseContext })
   @property({ type: Object })
     firebase = {
       value: undefined,
       update: this.updateFirebase
+    }
+
+  @provide({ context: examContext })
+  @property({ type: Object })
+    globalExam = {
+      value: undefined,
+      update: this.updateGlobalExam
     }
 
   routerController = new RouterController(this)

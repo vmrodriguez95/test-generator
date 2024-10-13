@@ -35,7 +35,7 @@ class MLayout extends LitElement {
   connectedCallback() {
     super.connectedCallback()
 
-    this.dbController.getUsername()
+    this.dbController.requestUsername()
   }
 
   render() {
@@ -55,7 +55,7 @@ class MLayout extends LitElement {
               <e-icon icon="user" size="md"></e-icon>
               <p class="${elementName}__text">Hola, <strong>${this.username}</strong></p>
             </div>
-            <c-tree></c-tree>
+            <c-tree class="${elementName}__tree"></c-tree>
             <div class="${elementName}__bottom">
               <button class="${elementName}__logout" @click=${this.authController.signOut}>
                 <e-icon icon="logout"></e-icon>

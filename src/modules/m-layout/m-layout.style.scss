@@ -42,8 +42,11 @@
     border-bottom: 1px solid var(--color-gray--medium);
   }
 
+  &__tree {
+    height: 100%;
+  }
+
   &__bottom {
-    margin-top: auto;
     padding-top: space(2);
     border-top: 1px solid var(--color-gray--medium);
   }

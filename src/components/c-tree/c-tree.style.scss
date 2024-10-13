@@ -2,7 +2,10 @@
 @import '../../styles/tools/tools.typography.scss';
 
 .c-tree {
+  $root: &;
   --eIconColor: var(--color-red);
+  height: 100%;
+  overflow: auto;
 
   button {
     display: inline-flex;
@@ -14,22 +17,33 @@
 
     e-icon {
       pointer-events: none;
+      transform: scale(1);
+      transition: transform 200ms ease-out;
+    }
+
+    &:hover e-icon {
+      transform: scale(1.3);
     }
   }
 
-  &__add {
-    @include text(400);
-    color: var(--color-gray--medium);
+  &__head {
     display: flex;
     align-items: center;
     gap: 0 space(1);
     margin-bottom: space(2);
   }
 
+  &__title {
+    @include text--large();
+    color: var(--color-gray--medium);
+    margin: 0
+  }
+
   &__text {
     @include text(400);
     color: var(--color-gray--medium);
     margin: 0;
+    white-space: nowrap;
   }
 
   &__treemap {
@@ -40,6 +54,10 @@
     list-style: none;
     padding: 0;
     margin: 0;
+
+    > #{$root}__list {
+      padding-left: space(2);
+    }
   }
 
   &__item {
@@ -48,6 +66,10 @@
     gap: space(2) space(1);
     margin-bottom: space(1);
     position: relative;
+
+    #{$root}__list {
+      margin-left: space(1);
+    }
   }
 
   &__input {
@@ -70,6 +92,7 @@
     position: absolute;
     top: 100%;
     z-index: 1;
+    left: 1px;
     background-color: white;
     border-radius: var(--border-radius);
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 4px 11px rgba(0, 0, 0, 0.1);
@@ -85,22 +108,5 @@
     color: var(--color-gray--medium);
     gap: space(1);
     position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: space(3);
-      right: calc(100% - space(3));
-      display: block;
-      height: 1px;
-      background-color: var(--color-gray);
-      margin-top: space(0.5);
-      transition: right 0.3s ease-out;
-    }
-
-    &:hover::after {
-      right: 0;
-    }
   }
 }
