@@ -9,14 +9,12 @@ export class RouterController {
   _routes = [
     {
       path: '/',
-      addToMenu: false,
       render: () => html`<v-login></v-login>`,
       enter: this.middleware.bind(this)
     },
     {
       path: DEFAULT_INTERNAL_PATHNAME,
       name: 'Tests',
-      addToMenu: true,
       render: () => html`<v-test></v-test>`,
       enter: this.middleware.bind(this)
     },
