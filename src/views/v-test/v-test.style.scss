@@ -3,45 +3,14 @@
 @import '../../styles/tools/tools.typography.scss';
 
 .v-test {
-  &__head {
-    border-bottom: 1px solid var(--color-gray);
-    padding: space(1);
-    box-sizing: border-box;
-    
-    @media(min-width: breakpoint('md')) {
-      padding: space(1) space(4);
-    }
-    
-    &__wrapper {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      gap: space(2);
-      width: 100%;
-
-      @media(min-width: breakpoint('md')) {
-        margin: 0 auto;
-        max-width: var(--width-wrapper);
-        flex-flow: row wrap;
-        justify-content: center;
-      }
-    }
-  }
-
-  &__file {
-    display: none;
-  }
-
-  &__form {
-    box-sizing: border-box;
-    padding: space(2) space(1) space(2) 0;
-    
-    @media(min-width: breakpoint('md')) {
-      margin: 0 auto;
-      padding: space(2) space(4);
-      width: 100%;
-      max-width: var(--width-wrapper);
-    }
+  box-sizing: border-box;
+  padding: space(2) space(1) space(2) 0;
+  
+  @media(min-width: breakpoint('md')) {
+    margin: 0 auto;
+    padding: space(2) space(4);
+    width: 100%;
+    max-width: var(--width-wrapper);
   }
 
   &__question {
@@ -51,13 +20,18 @@
   }
 
   &__statement {
+    display: flex;
+    align-items: center;
     margin: 0 0 space(1);
   }
 
   &__clear {
+    display: inline;
     background: none;
     border: 0;
+    padding: 0;
     cursor: pointer;
+    vertical-align: middle;
 
     * {
       pointer-events: none;
