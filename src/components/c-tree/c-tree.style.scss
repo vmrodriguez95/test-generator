@@ -34,13 +34,13 @@
   }
 
   &__title {
-    @include text--large();
+    @include text--large;
     color: var(--color-gray--medium);
     margin: 0
   }
 
   &__text {
-    @include text(400);
+    @include text(300);
     color: var(--color-gray--medium);
     margin: 0;
     white-space: nowrap;
