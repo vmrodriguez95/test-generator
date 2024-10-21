@@ -13,6 +13,10 @@
     max-width: var(--width-wrapper);
   }
 
+  &__title {
+    @include heading--h3;
+  }
+
   &__question {
     counter-reset: alpha-index;
     margin: 0 0 space(3);
@@ -20,16 +24,24 @@
   }
 
   &__statement {
+    @include text--large;
     display: flex;
     align-items: center;
     margin: 0 0 space(1);
+    color: var(--color-gray--medium);
+  }
+
+  &__answer {
+    @include text(300);
+    color: var(--color-gray--medium);
   }
 
   &__clear {
-    display: inline;
+    display: inline-flex;
     background: none;
     border: 0;
     padding: 0;
+    margin-left: space(0.5);
     cursor: pointer;
     vertical-align: middle;
 
@@ -50,6 +62,7 @@
   
   &__option {
     counter-increment: alpha-index;
+    margin-bottom: space(0.5);
 
     &::before {
       content: counter(alpha-index, upper-alpha) ".";
