@@ -153,6 +153,11 @@ function getCSSIndexContentReplaced(outputfileName) {
 function replaceBundlePath(buildConfig) {
   fs.writeFileSync(outdir + '/index.html', getJSIndexContentReplaced(buildConfig.entryNames + '.js'))
   fs.writeFileSync(outdir + '/index.html', getCSSIndexContentReplaced(buildConfig.entryNames + '.css'))
+
+  fs.readdirSync(outdir).forEach((fileOrDir) => {
+    // eslint-disable-next-line no-console
+    console.log(fileOrDir)
+  })
 }
 
 
