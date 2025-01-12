@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $breakpoints: (
   xxxs: 0,
   xxs: 360,
@@ -11,5 +13,5 @@ $breakpoints: (
 );
 
 @function breakpoint($varName) {
-  @return map-get($breakpoints, $varName) + px;
+  @return map.get($breakpoints, $varName) + px;
 }

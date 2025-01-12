@@ -1,5 +1,5 @@
-@import '../../styles/tools/tools.typography.scss';
-@import '../../styles/tools/tools.transition.scss';
+@use '../../styles/tools/tools.typography.scss' as *;
+@use '../../styles/tools/tools.transition.scss' as *;
 
 :host {
   display: inline-block;

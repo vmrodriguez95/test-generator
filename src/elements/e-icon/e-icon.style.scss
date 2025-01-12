@@ -1,4 +1,4 @@
-@import '../../styles/tools/tools.margins.scss';
+@use '../../styles/tools/tools.margins.scss' as *;
 
 :host,
 .e-icon {
