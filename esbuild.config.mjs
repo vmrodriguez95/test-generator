@@ -125,7 +125,7 @@ function getBuildConfig(type, env, files) {
 
 function removePreviousFiles() {
   // eslint-disable-next-line no-useless-escape
-  const fileregExp = new RegExp(`${entryNames}(\.[0-9]*)?.js|css$`)
+  const fileregExp = new RegExp(`${entryNames}(\.[0-9]*)?.js|css`)
 
   fs.readdirSync(outdir).forEach((fileOrDir) => {
     if (fileregExp.test(fileOrDir)) {
@@ -137,16 +137,16 @@ function removePreviousFiles() {
 function getJSIndexContentReplaced(outputfileName) {
   return fs.readFileSync(outdir + '/index.html').toString().replace(
     // eslint-disable-next-line no-useless-escape
-    /src="\/app(\.[0-9]*)?\.js"/gm,
-    `src="/${outputfileName}"`
+    /src="\/?app(\.[0-9]*)?\.js"/gm,
+    `src="${outputfileName}"`
   )
 }
 
 function getCSSIndexContentReplaced(outputfileName) {
   return fs.readFileSync(outdir + '/index.html').toString().replace(
     // eslint-disable-next-line no-useless-escape
-    /href="\/app(\.[0-9]*)?\.css"/gm,
-    `href="/${outputfileName}"`
+    /href="\/?app(\.[0-9]*)?\.css"/gm,
+    `href="${outputfileName}"`
   )
 }
 
