@@ -1,5 +1,5 @@
-@import '../tools/tools.grid.scss';
-@import '../tools/tools.margins.scss';
+@use '../tools/tools.grid.scss' as *;
+@use '../tools/tools.margins.scss' as *;
 
 .e-grid {
   --grid-xs-columns: 4;

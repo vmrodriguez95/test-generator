@@ -1,4 +1,4 @@
-@import '../../styles/tools/tools.typography.scss';
+@use '../../styles/tools/tools.typography.scss' as *;
 
 .e-wysiwyg {
   $root: &;

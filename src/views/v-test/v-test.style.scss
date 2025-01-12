@@ -1,6 +1,6 @@
-@import '../../styles/tools/tools.grid.scss';
-@import '../../styles/tools/tools.margins.scss';
-@import '../../styles/tools/tools.typography.scss';
+@use '../../styles/tools/tools.grid.scss' as *;
+@use '../../styles/tools/tools.margins.scss' as *;
+@use '../../styles/tools/tools.typography.scss' as *;
 
 .v-test {
   box-sizing: border-box;
