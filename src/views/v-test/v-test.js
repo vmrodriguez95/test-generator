@@ -58,7 +58,7 @@ class VTest extends LitElement {
       <m-layout>
         <section class="v-test">
           ${when(this.globalExam.value, () => html`
-            <h1>${this.globalExam.value.name}</h1>
+            <h1 class="v-test__title">${this.globalExam.value.name}</h1>
           `)}
           <form class="v-test__form" @submit=${this.validate}>
             ${when(this.globalExam.value, () => html`
@@ -77,7 +77,7 @@ class VTest extends LitElement {
                     ${map(Object.keys(question.options), (key, idx) => html`
                       <li class="v-test__option">
                         <input id="question-${questionIdx}-response-${idx}" class="v-test__radio" type="radio" name="question-${questionIdx}" value=${key} />
-                        <label for="question-${questionIdx}-response-${idx}">${question.options[key].text.trim()}</label>
+                        <label class="v-test__answer" for="question-${questionIdx}-response-${idx}">${question.options[key].text.trim()}</label>
                       </li>
                     `)}
                   </ul>
